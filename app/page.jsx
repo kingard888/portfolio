@@ -172,8 +172,8 @@ export default function Home() {
                 <h3>{project.name}</h3>
                 <p>{project.description}</p>
                 <div className="tags"><span>JavaScript</span><span>WhatsApp</span></div>
+                <a href={project.href} aria-label={`Lihat ${project.name}`} target={project.href.startsWith('http') ? '_blank' : undefined} rel={project.href.startsWith('http') ? 'noreferrer' : undefined}><ArrowUpRight /></a>
               </div>
-              <a href={project.href} aria-label={`Lihat ${project.name}`} target={project.href.startsWith('http') ? '_blank' : undefined} rel={project.href.startsWith('http') ? 'noreferrer' : undefined}><ArrowUpRight /></a>
             </article>
           ))}
         </div>
