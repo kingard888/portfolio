@@ -159,10 +159,12 @@ export default function Home() {
             <article className="project" key={project.name}>
               <div className="project-icon"><Code2 /></div>
               <div className="project-body">
-                <h3>{project.name}</h3>
-                <p>{project.description}</p>
-                <div className="tags"><span>JavaScript</span><span>WhatsApp</span></div>
-                <a href={project.href} aria-label={`Lihat ${project.name}`} target={project.href.startsWith('http') ? '_blank' : undefined} rel={project.href.startsWith('http') ? 'noreferrer' : undefined}><ArrowUpRight /></a>
+                <a href={project.href} aria-label={`Lihat ${project.name}`} target={project.href.startsWith('http') ? '_blank' : undefined} rel={project.href.startsWith('http') ? 'noreferrer' : undefined}>
+                  <h3>{project.name}</h3>
+                  <p>{project.description}</p>
+                  <div className="tags"><span>JavaScript</span><span>WhatsApp</span></div>
+                  <ArrowUpRight />
+                </a>
               </div>
             </article>
           ))}
