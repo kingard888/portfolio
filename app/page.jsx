@@ -156,17 +156,17 @@ export default function Home() {
         <SectionTitle icon={<FolderGit2 />} title="Projects" />
         <div className="projects">
           {projects.map((project) => (
+            <a href={project.href} aria-label={`Lihat ${project.name}`} target={project.href.startsWith('http') ? '_blank' : undefined} rel={project.href.startsWith('http') ? 'noreferrer' : undefined}>
             <article className="project" key={project.name}>
               <div className="project-icon"><Code2 /></div>
-                <a href={project.href} aria-label={`Lihat ${project.name}`} target={project.href.startsWith('http') ? '_blank' : undefined} rel={project.href.startsWith('http') ? 'noreferrer' : undefined}>
-                 <div className="project-body">
+                <div className="project-body">
                   <h3>{project.name}</h3>
                   <p>{project.description}</p>
                   <div className="tags"><span>JavaScript</span><span>WhatsApp</span></div>
                  </div>
-                <ArrowUpRight />
-              </a>
-            </article>
+                </article>
+              <ArrowUpRight />
+            </a>
           ))}
         </div>
       </section>
