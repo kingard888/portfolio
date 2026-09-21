@@ -19,15 +19,15 @@ const GITHUB_USERNAME = 'kingard888'
 const skills = [ 
   {
     name: 'JavaScript',
-    icon: '/assets/javascript_icon.png'
+    icon: 'javascript_icon.png'
   },
   {
     name: 'TypeScript',
-    icon: '/assets/typescript_icon.png'
+    icon: 'typescript_icon.png'
   },
   {
     name: 'Go',
-    icon: '/assets/golang_icon.png'
+    icon: 'golang_icon.png'
   }
 ]
 
