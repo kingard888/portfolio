@@ -16,7 +16,19 @@ import {
 } from 'lucide-react'
 
 const GITHUB_USERNAME = 'kingard888'
-const skills = ['JavaScript', 'TypeScript', 'Go']
+const skills = [ 
+  {
+    name: 'JavaScript',
+    icon: '/assets/javascript_icon.png'
+  },
+  {
+    name: 'TypeScript',
+    icon: '/assets/typescript_icon.png'
+  },
+  {
+    name: 'Go',
+    icon: '/assets/golang_icon.png'
+]
 
 const projects = [
   {
@@ -84,7 +96,6 @@ export default function Home() {
         <div className="hero-overlay" />
         <div className="hero-copy">
           <p className="eyebrow">DEVELOPER • CREATOR</p>
-          <span className="hero-line" />
         </div>
       </section>
 
@@ -122,10 +133,10 @@ export default function Home() {
         <SectionTitle icon={<Code2 />} title="Skills" />
         <div className="skills">
           {skills.map((skill) => (
-            <div className="skill" key={skill}>
-              <span className="skill-icon">&lt;/&gt;</span>
+            <div className="skill" key={skill.name}>
+              <img className="skill-icon" src={`/assets/${skill.icon}`} alt={skill.name} />
               <div>
-                <strong>{skill}</strong>
+                <strong>{skill.name}</strong>
                 <small>Programming Language</small>
               </div>
             </div>
@@ -137,17 +148,17 @@ export default function Home() {
         <SectionTitle icon={<Send />} title="Contact" />
         <div className="contact-grid">
           <a className="contact-card whatsapp" href="https://wa.me/6283153994043" target="_blank" rel="noreferrer">
-            <span className="brand-contact-icon whatsapp-icon"><WhatsAppIcon /></span>
+            <span className="brand-contact-icon whatsapp-icon"><img src="/assets/whatsapp_icon.png" /></span>
             <div><strong>WhatsApp</strong><span>Chat langsung melalui WhatsApp</span><b>+62 831-5399-4043</b></div>
             <ArrowUpRight />
           </a>
           <a className="contact-card instagram" href="https://www.instagram.com/arda8888_?stkn=MTF3M2sxczV2ZWtjag==" target="_blank" rel="noreferrer">
-            <span className="brand-contact-icon instagram-icon"><Instagram /></span>
+            <span className="brand-contact-icon instagram-icon"><img src="/assets/instagram_icon.png" /></span>
             <div><strong>Instagram</strong><span>Follow untuk update terbaru</span><b>@arda8888_</b></div>
             <ArrowUpRight />
           </a>
           <a className="contact-card github" href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noreferrer">
-            <span className="brand-contact-icon github-icon"><Github /></span>
+            <span className="brand-contact-icon github-icon"><img src="/assets/github_icon.png" /></span>
             <div><strong>GitHub</strong><span>Source code & open-source projects</span><b>@{GITHUB_USERNAME}</b></div>
             <ArrowUpRight />
           </a>
