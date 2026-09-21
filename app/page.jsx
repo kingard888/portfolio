@@ -136,7 +136,7 @@ export default function Home() {
         <div className="contact-grid">
           <a className="contact-card whatsapp" href="https://wa.me/6283153994043" target="_blank" rel="noreferrer">
             <span className="brand-contact-icon whatsapp-icon"><img src="/assets/whatsapp_icon.png" /></span>
-            <div><strong>WhatsApp</strong><span>Chat langsung melalui WhatsApp</span><b>+62 831-5399-4043</b></div>
+            <div><strong>WhatsApp</strong><span>Chat langsung melalui WhatsApp</span><b>@veryard</b></div>
             <ArrowUpRight />
           </a>
           <a className="contact-card instagram" href="https://www.instagram.com/arda8888_?stkn=MTF3M2sxczV2ZWtjag==" target="_blank" rel="noreferrer">
