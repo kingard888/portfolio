@@ -46,7 +46,6 @@ main { width: min(100%, 1000px); margin: auto; padding: 18px 20px 34px; }
 .menu-button { display: none; border: 0; background: transparent; color: white; }
 
 .hero img{display:block;width:100%;height:auto;object-fit:contain;}
-.hero img{display:block;width:100%;height:auto;aspect-ratio:auto;object-fit:contain;}
 .hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(3, 7, 18, .86), rgba(3, 7, 18, .18) 58%, rgba(3, 7, 18, .05)); }
 .hero-copy { position: absolute; left: 42px; top: 52px; }
 .eyebrow { color: #91baff; font-size: 12px; letter-spacing: 2px; }
