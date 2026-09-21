@@ -22,12 +22,12 @@ const projects = [
   {
     name: 'EmiliaBot',
     description: 'WhatsApp bot dengan berbagai fitur menarik dan lengkap.',
-    href: '#contact'
+    href: 'https://chat.whatsapp.com/Hq88t1MzvkyEWCHjjQ7b13'
   },
   {
     name: 'lenwy-whatsmeow',
     description: 'Library untuk membuat WhatsApp Bot JavaScript menggunakan Whatsmeow.',
-    href: `https://github.com/${GITHUB_USERNAME}`
+    href: `https://github.com/Lenwyy/lenwy-whatsmeow`
   }
 ]
 
@@ -84,9 +84,7 @@ export default function Home() {
         <div className="hero-overlay" />
         <div className="hero-copy">
           <p className="eyebrow">DEVELOPER • CREATOR</p>
-          <h1>Dream.<br />Build.<br />Create.</h1>
           <span className="hero-line" />
-          <p>Small steps<br />make big projects.</p>
         </div>
       </section>
 
