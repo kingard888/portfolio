@@ -45,7 +45,7 @@ main { width: min(100%, 1000px); margin: auto; padding: 18px 20px 34px; }
 .nav a:hover { color: white; background: rgba(94, 155, 255, .1); }
 .menu-button { display: none; border: 0; background: transparent; color: white; }
 
-.hero{position:relative;overflow:hidden;border-radius:28px;}
+.hero img{display:block;width:100%;height:auto;object-fit:contain;}
 .hero img{display:block;width:100%;height:auto;aspect-ratio:auto;object-fit:contain;}
 .hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(3, 7, 18, .86), rgba(3, 7, 18, .18) 58%, rgba(3, 7, 18, .05)); }
 .hero-copy { position: absolute; left: 42px; top: 52px; }
@@ -89,7 +89,7 @@ blockquote { margin: 25px 0 0; padding-left: 14px; color: #7eaaff; font-style: i
 .contact-card { display: grid; grid-template-columns: 42px 1fr 22px; gap: 14px; align-items: center; padding: 17px; border: 1px solid rgba(99, 147, 255, .4); border-radius: 15px; background: rgba(15, 28, 58, .7); transition: .2s; }
 .contact-card:hover, .project:hover { transform: translateY(-2px); border-color: rgba(125, 168, 255, .75); }
 .brand-contact-icon{width:42px;height:42px;min-width:42px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:12px;}
-.brand-contact-icon img{width:28px;height:28px;max-width:28px;max-height:28px;object-fit:contain;display:block;}
+.brand-contact-icon img{width:42px;height:42px;max-width:42px;max-height:42px;object-fit:contain;display:block;}
 .whatsapp-icon { background: #1fae69; }
 .instagram-icon { background: linear-gradient(135deg, #ffad3d, #d72f8a, #7342cc); }
 .github-icon { background: #24292f; }
@@ -121,7 +121,7 @@ footer p { margin: 0; font-size: 13px; }
   .nav { display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0; padding: 8px; flex-direction: column; border: 1px solid var(--border); border-radius: 15px; background: rgba(7, 15, 34, .95); backdrop-filter: blur(15px); }
   .nav.open { display: flex; }
   .nav a { padding: 13px; }
-  .hero { height: 330px; }
+  .hero { height: auto; min-height:0; }
   .hero-copy { left: 25px; top: 40px; }
   .hero h1 { font-size: 43px; }
   .profile-card, .about-content, .contact-grid, .projects { grid-template-columns: 1fr; }
