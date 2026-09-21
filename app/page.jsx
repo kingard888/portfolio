@@ -123,9 +123,6 @@ export default function Home() {
             <p>Dan sedang mengembangkan project lenwy-whatsmeow, library untuk WhatsApp Bot JavaScript menggunakan Whatsmeow.</p>
             <blockquote>Keep Learning, Keep Building</blockquote>
           </div>
-          <div className="about-art">
-            <img src="/assets/about-banner.png" alt="Fantasy artwork" />
-          </div>
         </div>
       </section>
 
