@@ -164,8 +164,8 @@ export default function Home() {
                   <p>{project.description}</p>
                   <div className="tags"><span>JavaScript</span><span>WhatsApp</span></div>
                  </div>
+                 <ArrowUpRight />
                 </article>
-              <ArrowUpRight />
             </a>
           ))}
         </div>
