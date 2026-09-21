@@ -28,6 +28,7 @@ const skills = [
   {
     name: 'Go',
     icon: '/assets/golang_icon.png'
+  }
 ]
 
 const projects = [
