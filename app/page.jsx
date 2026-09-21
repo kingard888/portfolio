@@ -96,7 +96,6 @@ export default function Home() {
         <img src="/assets/anime-banner.png" alt="Anime banner" />
         <div className="hero-overlay" />
         <div className="hero-copy">
-          <p className="eyebrow">DEVELOPER • CREATOR</p>
         </div>
       </section>
 
