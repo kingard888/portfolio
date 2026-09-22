@@ -13,7 +13,8 @@ import {
   X,
   Volume2,
   VolumeX,
-  Music
+  Music,
+  Lock
 } from 'lucide-react'
 
 const GITHUB_USERNAME = 'kingard888'
@@ -49,7 +50,6 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [github, setGithub] = useState(null)
   
-  // State & Ref untuk BGM
   const [isStarted, setIsStarted] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const audioRef = useRef(null)
@@ -67,21 +67,28 @@ export default function Home() {
   const closeMenu = () => setMenuOpen(false)
   const avatar = github?.avatar_url || `https://github.com/${GITHUB_USERNAME}.png?size=256`
 
-  // Fungsi Start BGM & Buka Portofolio
   const handleStart = () => {
-    const audio = new Audio('/assets/bgm.mp3')
-    audio.loop = true
-    audio.volume = 0.15
-    audioRef.current = audio
+    if (!isStarted) {
+      const audio = new Audio('/assets/bgm.mp3')
+      audio.loop = true
+      audio.volume = 0.15
+      audioRef.current = audio
 
-    audio.play().then(() => {
-      setIsPlaying(true)
-    }).catch(() => {})
+      audio.play().then(() => {
+        setIsPlaying(true)
+      }).catch(() => {})
 
-    setIsStarted(true)
+      setIsStarted(true)
+    }
   }
 
-  // Fungsi Toggle Play/Pause BGM di Header
+  const handleNavClick = () => {
+    closeMenu()
+    if (!isStarted) {
+      handleStart()
+    }
+  }
+
   const toggleBgm = () => {
     if (!audioRef.current) return
     if (isPlaying) {
@@ -94,177 +101,243 @@ export default function Home() {
   }
 
   return (
-    <main>
-      <header className="site-header">
-        <a href="#home" className="brand" onClick={closeMenu}>
-          <span className="brand-star">✦</span>
-          <span>Veryard</span>
-        </a>
+    <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <div>
+        <header className="site-header">
+          <a href="#home" className="brand" onClick={closeMenu}>
+            <span className="brand-star">✦</span>
+            <span>Veryard</span>
+          </a>
 
-        <button
-          className="menu-button"
-          aria-label="Buka menu"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+          <button
+            className="menu-button"
+            aria-label="Buka menu"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
 
-        <nav className={menuOpen ? 'nav open' : 'nav'}>
-          <a href="#about" onClick={closeMenu}><UserRound size={17} /> About</a>
-          <a href="#contact" onClick={closeMenu}><Send size={17} /> Contact</a>
-          <a href="#projects" onClick={closeMenu}><FolderGit2 size={17} /> Projects</a>
+          <nav className={menuOpen ? 'nav open' : 'nav'}>
+            <a href="#about" onClick={handleNavClick}><UserRound size={17} /> About</a>
+            <a href="#contact" onClick={handleNavClick}><Send size={17} /> Contact</a>
+            <a href="#projects" onClick={handleNavClick}><FolderGit2 size={17} /> Projects</a>
 
-          {/* Tombol Control BGM di Nav Header */}
-          {isStarted && (
-            <button
-              onClick={toggleBgm}
+            {isStarted && (
+              <button
+                onClick={toggleBgm}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: 'rgba(168, 85, 247, 0.15)',
+                  border: '1px solid rgba(168, 85, 247, 0.4)',
+                  borderRadius: '20px',
+                  padding: '6px 12px',
+                  color: '#c084fc',
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                {isPlaying ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                <span>{isPlaying ? 'BGM' : 'Mute'}</span>
+              </button>
+            )}
+          </nav>
+        </header>
+
+        <section id="home" className="hero shell">
+          <img src="/assets/anime-banner.png" alt="Anime banner" />
+          <div className="hero-overlay" />
+          <div className="hero-copy"></div>
+        </section>
+
+        <div style={{ position: 'relative', marginTop: '20px' }}>
+          {!isStarted && (
+            <div
+              onClick={handleStart}
               style={{
-                display: 'inline-flex',
+                position: 'absolute',
+                inset: 0,
+                zIndex: 20,
+                background: 'rgba(11, 10, 21, 0.4)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
-                gap: '6px',
-                background: 'rgba(168, 85, 247, 0.15)',
-                border: '1px solid rgba(168, 85, 247, 0.4)',
-                borderRadius: '20px',
-                padding: '6px 12px',
-                color: '#c084fc',
-                fontSize: '13px',
+                justifyContent: 'flex-start',
+                paddingTop: '60px',
                 cursor: 'pointer',
-                fontFamily: 'inherit'
+                transition: 'all 0.5s ease',
+                borderRadius: '16px'
               }}
             >
-              {isPlaying ? <Volume2 size={16} /> : <VolumeX size={16} />}
-              <span>{isPlaying ? 'BGM' : 'Mute'}</span>
-            </button>
-          )}
-        </nav>
-      </header>
-
-      {/* BANNER */}
-      <section id="home" className="hero shell">
-        <img src="/assets/anime-banner.png" alt="Anime banner" />
-        <div className="hero-overlay" />
-        <div className="hero-copy"></div>
-      </section>
-
-      {/* TOMBOL PRESS START DI BAWAH BANNER */}
-      {!isStarted && (
-        <div className="shell" style={{ marginTop: '16px', textAlign: 'center' }}>
-          <button
-            onClick={handleStart}
-            style={{
-              width: '100%',
-              padding: '16px 24px',
-              background: 'rgba(147, 51, 234, 0.2)',
-              border: '1px solid rgba(192, 132, 252, 0.6)',
-              borderRadius: '16px',
-              color: '#ffffff',
-              fontWeight: 'bold',
-              fontSize: '14px',
-              letterSpacing: '2px',
-              cursor: 'pointer',
-              boxShadow: '0 0 25px rgba(147, 51, 234, 0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px',
-              fontFamily: 'inherit'
-            }}
-          >
-            <Music size={18} /> PRESS START TO UNLOCK EXPERIENCE
-          </button>
-        </div>
-      )}
-
-      {/* SELURUH INFO PORTOFOLIO (Baru Muncul Setelah Diklik) */}
-      {isStarted && (
-        <>
-          <section className="profile-card shell">
-            <div className="profile-main">
-              <img className="avatar" src={avatar} alt="Veryard GitHub profile" />
-              <div>
-                <h2>Veryard <span>✦</span></h2>
-                <p>Lead Developer <b>•</b> EmiliaCompany</p>
-              </div>
-            </div>
-            <div className="profile-info">
-              <div><UserRound /><span>Nickname</span><strong>Veryard</strong></div>
-              <div><UserRound /><span>Original Name</span><strong>Verdyan Arda</strong></div>
-              <div><CalendarDays /><span>Date of Birth</span><strong>Sept, 21</strong></div>
-              <div><BriefcaseBusiness /><span>Lead Developer</span><strong>EmiliaCompany</strong></div>
-            </div>
-          </section>
-
-          <section id="about" className="section-card shell about-card">
-            <SectionTitle icon={<UserRound />} title="About" />
-            <div className="about-content">
-              <div>
-                <p>Saya adalah seorang developer pemula yang masih belajar. Saya memiliki project utama yaitu EmiliaBot, sebuah bot WhatsApp dengan banyak fitur menarik.</p>
-                <p>Dan sedang mengembangkan project lenwy-whatsmeow, library untuk WhatsApp Bot JavaScript menggunakan Whatsmeow.</p>
-                <blockquote>Keep Learning, Keep Building</blockquote>
-              </div>
-            </div>
-          </section>
-
-          <section className="section-card shell">
-            <SectionTitle icon={<Code2 />} title="Skills" />
-            <div className="skills">
-              {skills.map((skill) => (
-                <div className="skill" key={skill.name}>
-                  <img className="skill-icon" src={`/assets/${skill.icon}`} alt={skill.name} />
-                  <div>
-                    <strong>{skill.name}</strong>
-                    <small>Programming Language</small>
-                  </div>
+              <div
+                style={{
+                  position: 'sticky',
+                  top: '120px',
+                  background: 'rgba(24, 16, 43, 0.85)',
+                  border: '1px solid rgba(192, 132, 252, 0.5)',
+                  backdropFilter: 'blur(16px)',
+                  padding: '24px 28px',
+                  borderRadius: '24px',
+                  textAlign: 'center',
+                  boxShadow: '0 0 35px rgba(168, 85, 247, 0.35)',
+                  maxWidth: '90%',
+                  width: '400px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}
+              >
+                <div style={{
+                  width: '46px',
+                  height: '46px',
+                  borderRadius: '50%',
+                  background: 'rgba(168, 85, 247, 0.2)',
+                  border: '1px solid rgba(192, 132, 252, 0.6)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#c084fc'
+                }}>
+                  <Lock size={22} />
                 </div>
-              ))}
-            </div>
-          </section>
+                
+                <h3 style={{ margin: 0, color: '#ffffff', fontSize: '17px', fontWeight: '700', letterSpacing: '0.5px' }}>
+                  Interactive Experience
+                </h3>
+                
+                <p style={{ margin: 0, color: '#c084fc', fontSize: '13px', lineHeight: '1.5', opacity: 0.9 }}>
+                  Klik di mana saja atau tekan tombol di bawah untuk membuka penuh portofolio & memutar BGM.
+                </p>
 
-          <section id="contact" className="section-card shell">
-            <SectionTitle icon={<Send />} title="Contact" />
-            <div className="contact-grid">
-              <a className="contact-card whatsapp" href="https://wa.me/6283153994043" target="_blank" rel="noreferrer">
-                <span className="brand-contact-icon whatsapp-icon"><img src="/assets/whatsapp_icon.png" /></span>
-                <div><strong>WhatsApp</strong><span>Chat langsung melalui WhatsApp</span><b>@veryard</b></div>
-                <ArrowUpRight />
-              </a>
-              <a className="contact-card instagram" href="https://www.instagram.com/arda8888_?stkn=MTF3M2sxczV2ZWtjag==" target="_blank" rel="noreferrer">
-                <span className="brand-contact-icon instagram-icon"><img src="/assets/instagram_icon.png" /></span>
-                <div><strong>Instagram</strong><span>Follow untuk update terbaru</span><b>@arda8888_</b></div>
-                <ArrowUpRight />
-              </a>
-              <a className="contact-card github" href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noreferrer">
-                <span className="brand-contact-icon github-icon"><img src="/assets/github_icon.png" /></span>
-                <div><strong>GitHub</strong><span>Source code & open-source projects</span><b>@{GITHUB_USERNAME}</b></div>
-                <ArrowUpRight />
-              </a>
+                <button
+                  style={{
+                    marginTop: '8px',
+                    width: '100%',
+                    padding: '14px 20px',
+                    background: 'linear-gradient(135deg, #7e22ce 0%, #a855f7 100%)',
+                    border: 'none',
+                    borderRadius: '14px',
+                    color: '#ffffff',
+                    fontWeight: 'bold',
+                    fontSize: '13px',
+                    letterSpacing: '1.5px',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 20px rgba(168, 85, 247, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    fontFamily: 'inherit',
+                    transition: 'transform 0.2s ease'
+                  }}
+                >
+                  <Music size={16} /> PRESS START TO UNLOCK
+                </button>
+              </div>
             </div>
-          </section>
+          )}
 
-          <section id="projects" className="section-card shell">
-            <SectionTitle icon={<FolderGit2 />} title="Projects" />
-            <div className="projects">
-              {projects.map((project) => (
-                <a href={project.href} key={project.name} aria-label={`Lihat ${project.name}`} target={project.href.startsWith('http') ? '_blank' : undefined} rel={project.href.startsWith('http') ? 'noreferrer' : undefined}>
-                  <article className="project">
-                    <div className="project-icon"><Code2 /></div>
-                    <div className="project-body">
-                      <h3>{project.name}</h3>
-                      <p>{project.description}</p>
-                      <div className="tags"><span>JavaScript</span><span>WhatsApp</span></div>
+          <div style={{
+            filter: !isStarted ? 'blur(6px)' : 'none',
+            opacity: !isStarted ? 0.6 : 1,
+            pointerEvents: !isStarted ? 'none' : 'auto',
+            userSelect: !isStarted ? 'none' : 'auto',
+            transition: 'filter 0.5s ease, opacity 0.5s ease'
+          }}>
+            <section className="profile-card shell">
+              <div className="profile-main">
+                <img className="avatar" src={avatar} alt="Veryard GitHub profile" />
+                <div>
+                  <h2>Veryard <span>✦</span></h2>
+                  <p>Lead Developer <b>•</b> EmiliaCompany</p>
+                </div>
+              </div>
+              <div className="profile-info">
+                <div><UserRound /><span>Nickname</span><strong>Veryard</strong></div>
+                <div><UserRound /><span>Original Name</span><strong>Verdyan Arda</strong></div>
+                <div><CalendarDays /><span>Date of Birth</span><strong>Sept, 21</strong></div>
+                <div><BriefcaseBusiness /><span>Lead Developer</span><strong>EmiliaCompany</strong></div>
+              </div>
+            </section>
+
+            <section id="about" className="section-card shell about-card">
+              <SectionTitle icon={<UserRound />} title="About" />
+              <div className="about-content">
+                <div>
+                  <p>Saya adalah seorang developer pemula yang masih belajar. Saya memiliki project utama yaitu EmiliaBot, sebuah bot WhatsApp dengan banyak fitur menarik.</p>
+                  <p>Dan sedang mengembangkan project lenwy-whatsmeow, library untuk WhatsApp Bot JavaScript menggunakan Whatsmeow.</p>
+                  <blockquote>Keep Learning, Keep Building</blockquote>
+                </div>
+              </div>
+            </section>
+
+            <section className="section-card shell">
+              <SectionTitle icon={<Code2 />} title="Skills" />
+              <div className="skills">
+                {skills.map((skill) => (
+                  <div className="skill" key={skill.name}>
+                    <img className="skill-icon" src={`/assets/${skill.icon}`} alt={skill.name} />
+                    <div>
+                      <strong>{skill.name}</strong>
+                      <small>Programming Language</small>
                     </div>
-                    <ArrowUpRight />
-                  </article>
-                </a>
-              ))}
-            </div>
-          </section>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-          <footer>
-            <span>✦</span><i></i><p>© 2026 Veryard</p><i></i><span>✦</span>
-          </footer>
-        </>
-      )}
+            <section id="contact" className="section-card shell">
+              <SectionTitle icon={<Send />} title="Contact" />
+              <div className="contact-grid">
+                <a className="contact-card whatsapp" href="https://wa.me/6283153994043" target="_blank" rel="noreferrer">
+                  <span className="brand-contact-icon whatsapp-icon"><img src="/assets/whatsapp_icon.png" /></span>
+                  <div><strong>WhatsApp</strong><span>Chat langsung melalui WhatsApp</span><b>@veryard</b></div>
+                  <ArrowUpRight />
+                </a>
+                <a className="contact-card instagram" href="https://www.instagram.com/arda8888_?stkn=MTF3M2sxczV2ZWtjag==" target="_blank" rel="noreferrer">
+                  <span className="brand-contact-icon instagram-icon"><img src="/assets/instagram_icon.png" /></span>
+                  <div><strong>Instagram</strong><span>Follow untuk update terbaru</span><b>@arda8888_</b></div>
+                  <ArrowUpRight />
+                </a>
+                <a className="contact-card github" href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noreferrer">
+                  <span className="brand-contact-icon github-icon"><img src="/assets/github_icon.png" /></span>
+                  <div><strong>GitHub</strong><span>Source code & open-source projects</span><b>@{GITHUB_USERNAME}</b></div>
+                  <ArrowUpRight />
+                </a>
+              </div>
+            </section>
+
+            <section id="projects" className="section-card shell">
+              <SectionTitle icon={<FolderGit2 />} title="Projects" />
+              <div className="projects">
+                {projects.map((project) => (
+                  <a href={project.href} key={project.name} aria-label={`Lihat ${project.name}`} target={project.href.startsWith('http') ? '_blank' : undefined} rel={project.href.startsWith('http') ? 'noreferrer' : undefined}>
+                    <article className="project">
+                      <div className="project-icon"><Code2 /></div>
+                      <div className="project-body">
+                        <h3>{project.name}</h3>
+                        <p>{project.description}</p>
+                        <div className="tags"><span>JavaScript</span><span>WhatsApp</span></div>
+                      </div>
+                      <ArrowUpRight />
+                    </article>
+                  </a>
+                ))}
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <span>✦</span><i></i><p>© 2026 Veryard</p><i></i><span>✦</span>
+      </footer>
     </main>
   )
 }
