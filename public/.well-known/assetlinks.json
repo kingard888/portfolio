@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.veryard.app",
+      "sha256_cert_fingerprints": [
+        "8E:5F:87:36:F3:2A:34:17:9C:1C:40:70:E6:E9:FB:DF:62:DF:4B:F5:8F:C2:03:1A:22:63:DB:4B:CE:BB:07:69"
+      ]
+    }
+  }
+]
