@@ -60,7 +60,22 @@ export default function Home() {
         if (!res.ok) throw new Error('GitHub API error')
         return res.json()
       })
-      .then(setGithub)
+      .then((data) => {
+        setGithub(data)
+        if (data?.avatar_url) {
+          const head = document.head
+          const rels = ['icon', 'shortcut icon', 'apple-touch-icon']
+          rels.forEach((rel) => {
+            let link = document.querySelector(`link[rel="${rel}"]`)
+            if (!link) {
+              link = document.createElement('link')
+              link.rel = rel
+              head.appendChild(link)
+            }
+            link.href = data.avatar_url
+          })
+        }
+      })
       .catch(() => setGithub(null))
   }, [])
 
