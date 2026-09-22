@@ -1,6 +1,5 @@
 import './globals.css';
 import SoundEffect from './soundEffect';
-import SplashOverlay from './splashOverlay';
 
 export const metadata = {
   title: 'Veryard — Developer Portfolio',
@@ -12,7 +11,6 @@ export default function RootLayout({ children }) {
     <html lang="id">
       <body>
         <SoundEffect />
-        <SplashOverlay />
         {children}
       </body>
     </html>
