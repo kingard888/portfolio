@@ -1,14 +1,18 @@
-import './globals.css'
+import './globals.css';
+import SoundEffect from './soundEffect';
 
 export const metadata = {
   title: 'Veryard — Developer Portfolio',
-  description: 'Portfolio pribadi Veryard / Verd­yan Arda.'
-}
+  description: 'Portfolio pribadi Veryard / Verdyan Arda.'
+};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="id">
-      <body>{children}</body>
+      <body>
+        <SoundEffect />
+        {children}
+      </body>
     </html>
-  )
+  );
 }
