@@ -111,6 +111,31 @@ footer { display: flex; justify-content: center; align-items: center; gap: 13px;
 footer i { width: 90px; height: 1px; background: linear-gradient(90deg, transparent, #506a9f); }
 footer p { margin: 0; font-size: 13px; }
 
+@keyframes click-ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
+.click-ripple {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #a855f7;
+  background: rgba(168, 85, 247, 0.25);
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+  pointer-events: none;
+  animation: click-ripple 0.4s ease-out forwards;
+  z-index: 9999;
+}
+
+
 @media (max-width: 720px) {
   main { padding: 12px 13px 25px; }
   .site-header { top: 9px; padding: 13px 15px; }
