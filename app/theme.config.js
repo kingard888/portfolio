@@ -1,6 +1,6 @@
 
 const THEME_CONFIG = {
-  activeTheme: 'light
+  activeTheme: 'light'
 }
 
 export default THEME_CONFIG
