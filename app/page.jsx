@@ -166,7 +166,7 @@ export default function Home() {
       <div className="page-content">
         <header className="site-header">
           <a href="#home" className="brand" onClick={closeMenu}>
-            <span className="brand-star" aria-hidden="true">*</span>
+            <span className="brand-star" aria-hidden="true">✦</span>
             <span>Veryard</span>
           </a>
 
@@ -308,7 +308,7 @@ export default function Home() {
       </div>
 
       <footer>
-        <i /><p>© 2026 Veryard</p><i />
+        <p>✦</><i /><p>© 2026 Veryard</p><i /><p>✦</p>
       </footer>
     </main>
   )
