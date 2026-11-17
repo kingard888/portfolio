@@ -14,9 +14,7 @@ import {
   Volume2,
   VolumeX,
   Music,
-  Lock,
-  Moon,
-  Sun
+  Lock
 } from 'lucide-react'
 import { THEME_CONFIG } from './theme.config'
 
@@ -51,7 +49,6 @@ const BGM_TRACKS = [
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [github, setGithub] = useState(null)
-  const [theme, setTheme] = useState(THEME_CONFIG.activeTheme)
   const [isStarted, setIsStarted] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
 
@@ -146,10 +143,6 @@ export default function Home() {
       .catch(() => setIsPlaying(false))
   }
 
-  const toggleTheme = () => {
-    setTheme((current) => current === 'light' ? 'dark' : 'light')
-  }
-
   useEffect(() => {
     return () => {
       const audio = audioRef.current
@@ -166,12 +159,12 @@ export default function Home() {
   const avatar = github?.avatar_url || `https://github.com/${GITHUB_USERNAME}.png?size=256`
 
   return (
-    <main data-theme={theme} translate="no" className="notranslate">
-      <audio ref={audioRef} preload="none" onEnded={playRandomBgm} />
+    <main data-theme={THEME_CONFIG.activeTheme} translate="no" className="notranslate">
+      <audio ref={audioRef} preload="none" onEnded={playRandomBgm} onPause={() => setIsPlaying(false)} onPlay={() => setIsPlaying(true)} />
       <div className="page-content">
         <header className="site-header">
           <a href="#home" className="brand" onClick={closeMenu}>
-            <span className="brand-star">✦</span>
+            <span className="brand-star" aria-hidden="true">*</span>
             <span>Veryard</span>
           </a>
 
@@ -188,11 +181,6 @@ export default function Home() {
             <a href="#about" onClick={handleNavClick}><UserRound size={16} /> About</a>
             <a href="#contact" onClick={handleNavClick}><Send size={16} /> Contact</a>
             <a href="#projects" onClick={handleNavClick}><FolderGit2 size={16} /> Projects</a>
-
-            <button className="nav-pill theme-toggle" onClick={toggleTheme} type="button">
-              {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
-              {theme === 'light' ? 'Original Theme' : 'Silver Mist'}
-            </button>
 
             {isStarted && (
               <button className="nav-pill audio-toggle" onClick={toggleBgm} type="button">
@@ -230,7 +218,7 @@ export default function Home() {
               <div className="profile-main">
                 <img className="avatar" src={avatar} alt="Veryard GitHub profile" />
                 <div>
-                  <h2>Veryard <span>✦</span></h2>
+                  <h2>Veryard</h2>
                   <p>Lead Developer <b>•</b> EmiliaCompany</p>
                 </div>
               </div>
@@ -318,7 +306,7 @@ export default function Home() {
       </div>
 
       <footer>
-        <span>✦</span><i /><p>© 2026 Veryard</p><i /><span>✦</span>
+        <i /><p>© 2026 Veryard</p><i />
       </footer>
     </main>
   )
