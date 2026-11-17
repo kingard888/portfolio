@@ -1,3 +1,3 @@
-export const THEME_CONFIG = {
+export default const THEME_CONFIG = {
   activeTheme: 'light'
 }
