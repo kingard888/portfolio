@@ -49,10 +49,18 @@ const projects = [
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [github, setGithub] = useState(null)
-  
+
   const [isStarted, setIsStarted] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const audioRef = useRef(null)
+  const currentTrackRef = useRef(-1)
+
+  const bgmTracks = [
+    '/assets/bgm_0.mp3',
+    '/assets/bgm_1.mp3',
+    '/assets/bgm_2.mp3',
+    '/assets/bgm_3.mp3'
+  ]
 
   useEffect(() => {
     fetch(`https://api.github.com/users/${GITHUB_USERNAME}`)
@@ -82,18 +90,38 @@ export default function Home() {
   const closeMenu = () => setMenuOpen(false)
   const avatar = github?.avatar_url || `https://github.com/${GITHUB_USERNAME}.png?size=256`
 
+  const playRandomBgm = () => {
+    let nextTrack
+
+    do {
+      nextTrack = Math.floor(Math.random() * bgmTracks.length)
+    } while (bgmTracks.length > 1 && nextTrack === currentTrackRef.current)
+
+    currentTrackRef.current = nextTrack
+
+    const audio = audioRef.current
+    if (!audio) return
+
+    audio.src = bgmTracks[nextTrack]
+    audio.load()
+
+    audio.play()
+      .then(() => setIsPlaying(true))
+      .catch(() => setIsPlaying(false))
+  }
+
   const handleStart = () => {
     if (!isStarted) {
-      const audio = new Audio('/assets/bgm.mp3')
-      audio.loop = true
+      const audio = new Audio()
+      audio.loop = false
       audio.volume = 0.15
+
+      audio.addEventListener('ended', playRandomBgm)
+
       audioRef.current = audio
 
-      audio.play().then(() => {
-        setIsPlaying(true)
-      }).catch(() => {})
-
       setIsStarted(true)
+      playRandomBgm()
     }
   }
 
@@ -106,12 +134,14 @@ export default function Home() {
 
   const toggleBgm = () => {
     if (!audioRef.current) return
+
     if (isPlaying) {
       audioRef.current.pause()
       setIsPlaying(false)
     } else {
       audioRef.current.play()
-      setIsPlaying(true)
+        .then(() => setIsPlaying(true))
+        .catch(() => setIsPlaying(false))
     }
   }
 
@@ -221,11 +251,11 @@ export default function Home() {
                 }}>
                   <Lock size={22} />
                 </div>
-                
+
                 <h3 style={{ margin: 0, color: '#ffffff', fontSize: '17px', fontWeight: '700', letterSpacing: '0.5px' }}>
                   Interactive Experience
                 </h3>
-                
+
                 <p style={{ margin: 0, color: '#c084fc', fontSize: '13px', lineHeight: '1.5', opacity: 0.9 }}>
                   Klik di mana saja atau tekan tombol di bawah untuk membuka penuh portofolio & memutar BGM.
                 </p>
