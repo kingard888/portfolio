@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   UserRound,
   Send,
@@ -86,9 +86,9 @@ export default function Home() {
       .catch(() => setGithub(null))
   }, [])
 
-  // Audio hanya dibuat satu kali setelah interaksi pertama.
-  // Ref dipakai sebagai pengunci agar double click tidak membuat audio baru.
-  const playRandomBgm = () => {
+  // Gunakan satu elemen <audio> yang dirender React.
+  // Tidak membuat instance Audio baru setiap kali tombol ditekan.
+  const playRandomBgm = useCallback(() => {
     const audio = audioRef.current
     if (!audio || BGM_TRACKS.length === 0) return
 
@@ -101,27 +101,25 @@ export default function Home() {
     }
 
     currentTrackRef.current = nextTrack
+    audio.pause()
+    audio.currentTime = 0
     audio.src = BGM_TRACKS[nextTrack]
     audio.load()
 
     audio.play()
       .then(() => setIsPlaying(true))
       .catch(() => setIsPlaying(false))
-  }
+  }, [])
 
   const handleStart = () => {
     if (isStartedRef.current) return
 
+    const audio = audioRef.current
+    if (!audio) return
+
+    // Kunci diset secara sinkron sebelum memulai playback.
     isStartedRef.current = true
-
-    const audio = new Audio()
-    audio.loop = false
     audio.volume = 0.15
-    audio.preload = 'auto'
-
-    audioRef.current = audio
-    audio.addEventListener('ended', playRandomBgm)
-
     setIsStarted(true)
     playRandomBgm()
   }
@@ -157,17 +155,19 @@ export default function Home() {
       const audio = audioRef.current
       if (audio) {
         audio.pause()
-        audio.removeEventListener('ended', playRandomBgm)
-        audio.src = ''
-        audioRef.current = null
+        audio.removeAttribute('src')
+        audio.load()
       }
+      audioRef.current = null
+      isStartedRef.current = false
     }
   }, [])
 
   const avatar = github?.avatar_url || `https://github.com/${GITHUB_USERNAME}.png?size=256`
 
   return (
-    <main data-theme={theme}>
+    <main data-theme={theme} translate="no" className="notranslate">
+      <audio ref={audioRef} preload="none" onEnded={playRandomBgm} />
       <div className="page-content">
         <header className="site-header">
           <a href="#home" className="brand" onClick={closeMenu}>
@@ -191,7 +191,7 @@ export default function Home() {
 
             <button className="nav-pill theme-toggle" onClick={toggleTheme} type="button">
               {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
-              {theme === 'light' ? 'Dark Fantasy' : 'Silver Mist'}
+              {theme === 'light' ? 'Original Theme' : 'Silver Mist'}
             </button>
 
             {isStarted && (
@@ -205,13 +205,6 @@ export default function Home() {
 
         <section id="home" className="hero shell">
           <img src="/assets/anime-banner.png" alt="Monochrome anime banner" />
-          <div className="hero-overlay" />
-          <div className="hero-copy">
-            <span className="eyebrow">WELCOME TO MY PORTFOLIO</span>
-            <h1>Veryard<span className="hero-star">.</span></h1>
-            <p className="hero-role">Lead Developer <b>•</b> EmiliaCompany</p>
-            <p className="hero-quote">Keep Learning, Keep Building.</p>
-          </div>
         </section>
 
         <div className="content-wrap">
