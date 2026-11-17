@@ -368,7 +368,7 @@ export default function Home() {
                       <div className="project-body">
                         <h3>{project.name}</h3>
                         <p>{project.description}</p>
-                        <div className="tags"><span>JavaScript</span><span>WhatsApp</span></div>
+                        <div className="tags"><span>JavaScript</span><span>Golang</span><span>Whatsmeow</span><span>WhatsApp</span></div>
                       </div>
                       <ArrowUpRight />
                     </article>
