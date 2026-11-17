@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   UserRound,
   Send,
@@ -15,11 +15,10 @@ import {
   VolumeX,
   Music,
   Lock,
-  Sun,
-  Moon
+  Moon,
+  Sun
 } from 'lucide-react'
-
-import THEME_CONFIG from './theme.config'
+import { THEME_CONFIG } from './theme.config'
 
 const GITHUB_USERNAME = 'kingard888'
 
@@ -42,26 +41,23 @@ const projects = [
   }
 ]
 
+const BGM_TRACKS = [
+  '/assets/bgm_0.mp3',
+  '/assets/bgm_1.mp3',
+  '/assets/bgm_2.mp3',
+  '/assets/bgm_3.mp3'
+]
+
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [github, setGithub] = useState(null)
+  const [theme, setTheme] = useState(THEME_CONFIG.activeTheme)
   const [isStarted, setIsStarted] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [activeTheme, setActiveTheme] = useState(THEME_CONFIG.activeTheme)
 
   const audioRef = useRef(null)
   const currentTrackRef = useRef(-1)
-
-  const bgmTracks = [
-    '/assets/bgm_0.mp3',
-    '/assets/bgm_1.mp3',
-    '/assets/bgm_2.mp3',
-    '/assets/bgm_3.mp3'
-  ]
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = activeTheme
-  }, [activeTheme])
+  const isStartedRef = useRef(false)
 
   useEffect(() => {
     fetch(`https://api.github.com/users/${GITHUB_USERNAME}`)
@@ -78,13 +74,11 @@ export default function Home() {
 
           rels.forEach((rel) => {
             let link = document.querySelector(`link[rel="${rel}"]`)
-
             if (!link) {
               link = document.createElement('link')
               link.rel = rel
               head.appendChild(link)
             }
-
             link.href = data.avatar_url
           })
         }
@@ -92,22 +86,22 @@ export default function Home() {
       .catch(() => setGithub(null))
   }, [])
 
-  const closeMenu = () => setMenuOpen(false)
-  const avatar = github?.avatar_url || `https://github.com/${GITHUB_USERNAME}.png?size=256`
-
+  // Audio hanya dibuat satu kali setelah interaksi pertama.
+  // Ref dipakai sebagai pengunci agar double click tidak membuat audio baru.
   const playRandomBgm = () => {
-    let nextTrack
+    const audio = audioRef.current
+    if (!audio || BGM_TRACKS.length === 0) return
 
-    do {
-      nextTrack = Math.floor(Math.random() * bgmTracks.length)
-    } while (bgmTracks.length > 1 && nextTrack === currentTrackRef.current)
+    let nextTrack = 0
+
+    if (BGM_TRACKS.length > 1) {
+      do {
+        nextTrack = Math.floor(Math.random() * BGM_TRACKS.length)
+      } while (nextTrack === currentTrackRef.current)
+    }
 
     currentTrackRef.current = nextTrack
-
-    const audio = audioRef.current
-    if (!audio) return
-
-    audio.src = bgmTracks[nextTrack]
+    audio.src = BGM_TRACKS[nextTrack]
     audio.load()
 
     audio.play()
@@ -116,127 +110,135 @@ export default function Home() {
   }
 
   const handleStart = () => {
-    if (!isStarted) {
-      const audio = new Audio()
-      audio.loop = false
-      audio.volume = 0.15
+    if (isStartedRef.current) return
 
-      audio.addEventListener('ended', playRandomBgm)
+    isStartedRef.current = true
 
-      audioRef.current = audio
+    const audio = new Audio()
+    audio.loop = false
+    audio.volume = 0.15
+    audio.preload = 'auto'
 
-      setIsStarted(true)
-      playRandomBgm()
-    }
+    audioRef.current = audio
+    audio.addEventListener('ended', playRandomBgm)
+
+    setIsStarted(true)
+    playRandomBgm()
   }
+
+  const closeMenu = () => setMenuOpen(false)
 
   const handleNavClick = () => {
     closeMenu()
-
-    if (!isStarted) {
-      handleStart()
-    }
+    handleStart()
   }
 
   const toggleBgm = () => {
-    if (!audioRef.current) return
+    const audio = audioRef.current
+    if (!audio) return
 
-    if (isPlaying) {
-      audioRef.current.pause()
+    if (!audio.paused) {
+      audio.pause()
       setIsPlaying(false)
-    } else {
-      audioRef.current.play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false))
+      return
     }
+
+    audio.play()
+      .then(() => setIsPlaying(true))
+      .catch(() => setIsPlaying(false))
   }
 
   const toggleTheme = () => {
-    setActiveTheme((current) => current === 'dark' ? 'light' : 'dark')
+    setTheme((current) => current === 'light' ? 'dark' : 'light')
   }
 
+  useEffect(() => {
+    return () => {
+      const audio = audioRef.current
+      if (audio) {
+        audio.pause()
+        audio.removeEventListener('ended', playRandomBgm)
+        audio.src = ''
+        audioRef.current = null
+      }
+    }
+  }, [])
+
+  const avatar = github?.avatar_url || `https://github.com/${GITHUB_USERNAME}.png?size=256`
+
   return (
-    <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
+    <main data-theme={theme}>
+      <div className="page-content">
         <header className="site-header">
           <a href="#home" className="brand" onClick={closeMenu}>
-            <span className="brand-star">Рюд</span>
+            <span className="brand-star">✦</span>
             <span>Veryard</span>
           </a>
 
           <button
             className="menu-button"
             aria-label="Buka menu"
-            onClick={() => setMenuOpen(!menuOpen)}
+            onClick={() => setMenuOpen((open) => !open)}
+            type="button"
           >
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            {menuOpen ? <X size={21} /> : <Menu size={21} />}
           </button>
 
           <nav className={menuOpen ? 'nav open' : 'nav'}>
-            <a href="#about" onClick={handleNavClick}><UserRound size={17} /> About</a>
-            <a href="#contact" onClick={handleNavClick}><Send size={17} /> Contact</a>
-            <a href="#projects" onClick={handleNavClick}><FolderGit2 size={17} /> Projects</a>
+            <a href="#about" onClick={handleNavClick}><UserRound size={16} /> About</a>
+            <a href="#contact" onClick={handleNavClick}><Send size={16} /> Contact</a>
+            <a href="#projects" onClick={handleNavClick}><FolderGit2 size={16} /> Projects</a>
 
-            <button className="theme-toggle" onClick={toggleTheme} aria-label="Ganti tema">
-              {activeTheme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-              <span>{activeTheme === 'light' ? 'Silver Mist' : 'Dark Fantasy'}</span>
+            <button className="nav-pill theme-toggle" onClick={toggleTheme} type="button">
+              {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
+              {theme === 'light' ? 'Dark Fantasy' : 'Silver Mist'}
             </button>
 
             {isStarted && (
-              <button className="bgm-toggle" onClick={toggleBgm}>
-                {isPlaying ? <Volume2 size={16} /> : <VolumeX size={16} />}
-                <span>{isPlaying ? 'BGM' : 'Mute'}</span>
+              <button className="nav-pill audio-toggle" onClick={toggleBgm} type="button">
+                {isPlaying ? <Volume2 size={15} /> : <VolumeX size={15} />}
+                {isPlaying ? 'BGM' : 'Muted'}
               </button>
             )}
           </nav>
         </header>
 
         <section id="home" className="hero shell">
-          <img
-            src={activeTheme === 'light'
-              ? '/assets/anime-banner-light.jpg'
-              : '/assets/anime-banner.png'}
-            alt="Anime banner"
-          />
+          <img src="/assets/anime-banner.png" alt="Monochrome anime banner" />
           <div className="hero-overlay" />
           <div className="hero-copy">
             <span className="eyebrow">WELCOME TO MY PORTFOLIO</span>
-            <h1>Veryard <span>Рюд</span></h1>
-            <p className="hero-subtitle">Lead Developer <b>Рђб</b> EmiliaCompany</p>
-            <span className="hero-line" />
-            <p className="hero-quote">РђюKeep Learning, Keep Building.РђЮ</p>
+            <h1>Veryard<span className="hero-star">.</span></h1>
+            <p className="hero-role">Lead Developer <b>•</b> EmiliaCompany</p>
+            <p className="hero-quote">Keep Learning, Keep Building.</p>
           </div>
         </section>
 
-        <div className="content-wrapper">
+        <div className="content-wrap">
           {!isStarted && (
-            <div
-              className="start-overlay"
-              onClick={handleStart}
-              role="button"
-              tabIndex={0}
+            <div className="start-overlay" onClick={handleStart} role="button" tabIndex={0}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') handleStart()
               }}
-            >
+              aria-label="Mulai pengalaman portfolio">
               <div className="start-card">
-                <div className="start-icon"><Lock size={22} /></div>
+                <div className="start-icon"><Lock size={21} /></div>
                 <h3>Interactive Experience</h3>
-                <p>Klik di mana saja atau tekan tombol di bawah untuk membuka penuh portofolio & memutar BGM.</p>
-                <button className="start-button" onClick={handleStart}>
+                <p>Klik untuk membuka portfolio dan mulai memutar musik latar.</p>
+                <button type="button" className="start-button">
                   <Music size={16} /> PRESS START TO UNLOCK
                 </button>
               </div>
             </div>
           )}
 
-          <div className={!isStarted ? 'portfolio-content locked' : 'portfolio-content'}>
+          <div className={`portfolio-content ${!isStarted ? 'is-locked' : ''}`}>
             <section className="profile-card shell">
               <div className="profile-main">
                 <img className="avatar" src={avatar} alt="Veryard GitHub profile" />
                 <div>
-                  <h2>Veryard <span>Рюд</span></h2>
-                  <p>Lead Developer <b>Рђб</b> EmiliaCompany</p>
+                  <h2>Veryard <span>✦</span></h2>
+                  <p>Lead Developer <b>•</b> EmiliaCompany</p>
                 </div>
               </div>
 
@@ -248,7 +250,7 @@ export default function Home() {
               </div>
             </section>
 
-            <section id="about" className="section-card shell about-card">
+            <section id="about" className="section-card shell">
               <SectionTitle icon={<UserRound />} title="About" />
               <div className="about-content">
                 <div>
@@ -291,7 +293,7 @@ export default function Home() {
 
                 <a className="contact-card github" href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noreferrer">
                   <span className="brand-contact-icon github-icon"><img src="/assets/github_icon.png" alt="" /></span>
-                  <div><strong>GitHub</strong><span>Source code & open-source projects</span><b>@{GITHUB_USERNAME}</b></div>
+                  <div><strong>GitHub</strong><span>Source code &amp; open-source projects</span><b>@{GITHUB_USERNAME}</b></div>
                   <ArrowUpRight />
                 </a>
               </div>
@@ -301,23 +303,15 @@ export default function Home() {
               <SectionTitle icon={<FolderGit2 />} title="Projects" />
               <div className="projects">
                 {projects.map((project) => (
-                  <a
-                    href={project.href}
-                    key={project.name}
-                    aria-label={`Lihat ${project.name}`}
-                    target={project.href.startsWith('http') ? '_blank' : undefined}
-                    rel={project.href.startsWith('http') ? 'noreferrer' : undefined}
-                  >
+                  <a href={project.href} key={project.name} aria-label={`Lihat ${project.name}`}
+                    target="_blank" rel="noreferrer">
                     <article className="project">
                       <div className="project-icon"><Code2 /></div>
                       <div className="project-body">
                         <h3>{project.name}</h3>
                         <p>{project.description}</p>
                         <div className="tags">
-                          <span>JavaScript</span>
-                          <span>Golang</span>
-                          <span>Whatsmeow</span>
-                          <span>WhatsApp</span>
+                          <span>JavaScript</span><span>Golang</span><span>Whatsmeow</span><span>WhatsApp</span>
                         </div>
                       </div>
                       <ArrowUpRight />
@@ -331,7 +325,7 @@ export default function Home() {
       </div>
 
       <footer>
-        <span>Рюд</span><i></i><p>┬Е 2026 Veryard</p><i></i><span>Рюд</span>
+        <span>✦</span><i /><p>© 2026 Veryard</p><i /><span>✦</span>
       </footer>
     </main>
   )
