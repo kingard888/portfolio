@@ -16,7 +16,7 @@ import {
   Music,
   Lock
 } from 'lucide-react'
-import { THEME_CONFIG } from './theme.config'
+import { THEME_CONFIG } from './theme.config.js'
 
 const GITHUB_USERNAME = 'kingard888'
 
