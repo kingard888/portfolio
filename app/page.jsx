@@ -14,23 +14,19 @@ import {
   Volume2,
   VolumeX,
   Music,
-  Lock
+  Lock,
+  Sun,
+  Moon
 } from 'lucide-react'
 
+import THEME_CONFIG from './theme.config'
+
 const GITHUB_USERNAME = 'kingard888'
-const skills = [ 
-  {
-    name: 'JavaScript',
-    icon: 'javascript_icon.png'
-  },
-  {
-    name: 'TypeScript',
-    icon: 'typescript_icon.png'
-  },
-  {
-    name: 'Go',
-    icon: 'golang_icon.png'
-  }
+
+const skills = [
+  { name: 'JavaScript', icon: 'javascript_icon.png' },
+  { name: 'TypeScript', icon: 'typescript_icon.png' },
+  { name: 'Go', icon: 'golang_icon.png' }
 ]
 
 const projects = [
@@ -42,16 +38,17 @@ const projects = [
   {
     name: 'lenwy-whatsmeow',
     description: 'Library untuk membuat WhatsApp Bot JavaScript menggunakan Whatsmeow.',
-    href: `https://github.com/Lenwyy/lenwy-whatsmeow`
+    href: 'https://github.com/Lenwyy/lenwy-whatsmeow'
   }
 ]
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [github, setGithub] = useState(null)
-
   const [isStarted, setIsStarted] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [activeTheme, setActiveTheme] = useState(THEME_CONFIG.activeTheme)
+
   const audioRef = useRef(null)
   const currentTrackRef = useRef(-1)
 
@@ -63,6 +60,10 @@ export default function Home() {
   ]
 
   useEffect(() => {
+    document.documentElement.dataset.theme = activeTheme
+  }, [activeTheme])
+
+  useEffect(() => {
     fetch(`https://api.github.com/users/${GITHUB_USERNAME}`)
       .then((res) => {
         if (!res.ok) throw new Error('GitHub API error')
@@ -70,16 +71,20 @@ export default function Home() {
       })
       .then((data) => {
         setGithub(data)
+
         if (data?.avatar_url) {
           const head = document.head
           const rels = ['icon', 'shortcut icon', 'apple-touch-icon']
+
           rels.forEach((rel) => {
             let link = document.querySelector(`link[rel="${rel}"]`)
+
             if (!link) {
               link = document.createElement('link')
               link.rel = rel
               head.appendChild(link)
             }
+
             link.href = data.avatar_url
           })
         }
@@ -127,6 +132,7 @@ export default function Home() {
 
   const handleNavClick = () => {
     closeMenu()
+
     if (!isStarted) {
       handleStart()
     }
@@ -145,12 +151,16 @@ export default function Home() {
     }
   }
 
+  const toggleTheme = () => {
+    setActiveTheme((current) => current === 'dark' ? 'light' : 'dark')
+  }
+
   return (
     <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
       <div>
         <header className="site-header">
           <a href="#home" className="brand" onClick={closeMenu}>
-            <span className="brand-star">✦</span>
+            <span className="brand-star">Рюд</span>
             <span>Veryard</span>
           </a>
 
@@ -167,24 +177,13 @@ export default function Home() {
             <a href="#contact" onClick={handleNavClick}><Send size={17} /> Contact</a>
             <a href="#projects" onClick={handleNavClick}><FolderGit2 size={17} /> Projects</a>
 
+            <button className="theme-toggle" onClick={toggleTheme} aria-label="Ganti tema">
+              {activeTheme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+              <span>{activeTheme === 'light' ? 'Silver Mist' : 'Dark Fantasy'}</span>
+            </button>
+
             {isStarted && (
-              <button
-                onClick={toggleBgm}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: 'rgba(168, 85, 247, 0.15)',
-                  border: '1px solid rgba(168, 85, 247, 0.4)',
-                  borderRadius: '20px',
-                  padding: '6px 12px',
-                  color: '#c084fc',
-                  fontSize: '13px',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  transition: 'all 0.3s ease'
-                }}
-              >
+              <button className="bgm-toggle" onClick={toggleBgm}>
                 {isPlaying ? <Volume2 size={16} /> : <VolumeX size={16} />}
                 <span>{isPlaying ? 'BGM' : 'Mute'}</span>
               </button>
@@ -193,116 +192,54 @@ export default function Home() {
         </header>
 
         <section id="home" className="hero shell">
-          <img src="/assets/anime-banner.png" alt="Anime banner" />
+          <img
+            src={activeTheme === 'light'
+              ? '/assets/anime-banner-light.jpg'
+              : '/assets/anime-banner.png'}
+            alt="Anime banner"
+          />
           <div className="hero-overlay" />
-          <div className="hero-copy"></div>
+          <div className="hero-copy">
+            <span className="eyebrow">WELCOME TO MY PORTFOLIO</span>
+            <h1>Veryard <span>Рюд</span></h1>
+            <p className="hero-subtitle">Lead Developer <b>Рђб</b> EmiliaCompany</p>
+            <span className="hero-line" />
+            <p className="hero-quote">РђюKeep Learning, Keep Building.РђЮ</p>
+          </div>
         </section>
 
-        <div style={{ position: 'relative', marginTop: '20px' }}>
+        <div className="content-wrapper">
           {!isStarted && (
             <div
+              className="start-overlay"
               onClick={handleStart}
-              style={{
-                position: 'absolute',
-                inset: 0,
-                zIndex: 20,
-                background: 'rgba(11, 10, 21, 0.4)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                paddingTop: '60px',
-                cursor: 'pointer',
-                transition: 'all 0.5s ease',
-                borderRadius: '16px'
+              role="button"
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') handleStart()
               }}
             >
-              <div
-                style={{
-                  position: 'sticky',
-                  top: '120px',
-                  background: 'rgba(24, 16, 43, 0.85)',
-                  border: '1px solid rgba(192, 132, 252, 0.5)',
-                  backdropFilter: 'blur(16px)',
-                  padding: '24px 28px',
-                  borderRadius: '24px',
-                  textAlign: 'center',
-                  boxShadow: '0 0 35px rgba(168, 85, 247, 0.35)',
-                  maxWidth: '90%',
-                  width: '400px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '12px'
-                }}
-              >
-                <div style={{
-                  width: '46px',
-                  height: '46px',
-                  borderRadius: '50%',
-                  background: 'rgba(168, 85, 247, 0.2)',
-                  border: '1px solid rgba(192, 132, 252, 0.6)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#c084fc'
-                }}>
-                  <Lock size={22} />
-                </div>
-
-                <h3 style={{ margin: 0, color: '#ffffff', fontSize: '17px', fontWeight: '700', letterSpacing: '0.5px' }}>
-                  Interactive Experience
-                </h3>
-
-                <p style={{ margin: 0, color: '#c084fc', fontSize: '13px', lineHeight: '1.5', opacity: 0.9 }}>
-                  Klik di mana saja atau tekan tombol di bawah untuk membuka penuh portofolio & memutar BGM.
-                </p>
-
-                <button
-                  style={{
-                    marginTop: '8px',
-                    width: '100%',
-                    padding: '14px 20px',
-                    background: 'linear-gradient(135deg, #7e22ce 0%, #a855f7 100%)',
-                    border: 'none',
-                    borderRadius: '14px',
-                    color: '#ffffff',
-                    fontWeight: 'bold',
-                    fontSize: '13px',
-                    letterSpacing: '1.5px',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 20px rgba(168, 85, 247, 0.4)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    fontFamily: 'inherit',
-                    transition: 'transform 0.2s ease'
-                  }}
-                >
+              <div className="start-card">
+                <div className="start-icon"><Lock size={22} /></div>
+                <h3>Interactive Experience</h3>
+                <p>Klik di mana saja atau tekan tombol di bawah untuk membuka penuh portofolio & memutar BGM.</p>
+                <button className="start-button" onClick={handleStart}>
                   <Music size={16} /> PRESS START TO UNLOCK
                 </button>
               </div>
             </div>
           )}
 
-          <div style={{
-            filter: !isStarted ? 'blur(6px)' : 'none',
-            opacity: !isStarted ? 0.6 : 1,
-            pointerEvents: !isStarted ? 'none' : 'auto',
-            userSelect: !isStarted ? 'none' : 'auto',
-            transition: 'filter 0.5s ease, opacity 0.5s ease'
-          }}>
+          <div className={!isStarted ? 'portfolio-content locked' : 'portfolio-content'}>
             <section className="profile-card shell">
               <div className="profile-main">
                 <img className="avatar" src={avatar} alt="Veryard GitHub profile" />
                 <div>
-                  <h2>Veryard <span>✦</span></h2>
-                  <p>Lead Developer <b>•</b> EmiliaCompany</p>
+                  <h2>Veryard <span>Рюд</span></h2>
+                  <p>Lead Developer <b>Рђб</b> EmiliaCompany</p>
                 </div>
               </div>
+
               <div className="profile-info">
                 <div><UserRound /><span>Nickname</span><strong>Veryard</strong></div>
                 <div><UserRound /><span>Original Name</span><strong>Verdyan Arda</strong></div>
@@ -341,17 +278,19 @@ export default function Home() {
               <SectionTitle icon={<Send />} title="Contact" />
               <div className="contact-grid">
                 <a className="contact-card whatsapp" href="https://wa.me/6283153994043" target="_blank" rel="noreferrer">
-                  <span className="brand-contact-icon whatsapp-icon"><img src="/assets/whatsapp_icon.png" /></span>
+                  <span className="brand-contact-icon whatsapp-icon"><img src="/assets/whatsapp_icon.png" alt="" /></span>
                   <div><strong>WhatsApp</strong><span>Chat langsung melalui WhatsApp</span><b>@veryard</b></div>
                   <ArrowUpRight />
                 </a>
+
                 <a className="contact-card instagram" href="https://www.instagram.com/arda8888_?stkn=MTF3M2sxczV2ZWtjag==" target="_blank" rel="noreferrer">
-                  <span className="brand-contact-icon instagram-icon"><img src="/assets/instagram_icon.png" /></span>
+                  <span className="brand-contact-icon instagram-icon"><img src="/assets/instagram_icon.png" alt="" /></span>
                   <div><strong>Instagram</strong><span>Follow untuk update terbaru</span><b>@arda8888_</b></div>
                   <ArrowUpRight />
                 </a>
+
                 <a className="contact-card github" href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noreferrer">
-                  <span className="brand-contact-icon github-icon"><img src="/assets/github_icon.png" /></span>
+                  <span className="brand-contact-icon github-icon"><img src="/assets/github_icon.png" alt="" /></span>
                   <div><strong>GitHub</strong><span>Source code & open-source projects</span><b>@{GITHUB_USERNAME}</b></div>
                   <ArrowUpRight />
                 </a>
@@ -362,13 +301,24 @@ export default function Home() {
               <SectionTitle icon={<FolderGit2 />} title="Projects" />
               <div className="projects">
                 {projects.map((project) => (
-                  <a href={project.href} key={project.name} aria-label={`Lihat ${project.name}`} target={project.href.startsWith('http') ? '_blank' : undefined} rel={project.href.startsWith('http') ? 'noreferrer' : undefined}>
+                  <a
+                    href={project.href}
+                    key={project.name}
+                    aria-label={`Lihat ${project.name}`}
+                    target={project.href.startsWith('http') ? '_blank' : undefined}
+                    rel={project.href.startsWith('http') ? 'noreferrer' : undefined}
+                  >
                     <article className="project">
                       <div className="project-icon"><Code2 /></div>
                       <div className="project-body">
                         <h3>{project.name}</h3>
                         <p>{project.description}</p>
-                        <div className="tags"><span>JavaScript</span><span>Golang</span><span>Whatsmeow</span><span>WhatsApp</span></div>
+                        <div className="tags">
+                          <span>JavaScript</span>
+                          <span>Golang</span>
+                          <span>Whatsmeow</span>
+                          <span>WhatsApp</span>
+                        </div>
                       </div>
                       <ArrowUpRight />
                     </article>
@@ -381,7 +331,7 @@ export default function Home() {
       </div>
 
       <footer>
-        <span>✦</span><i></i><p>© 2026 Veryard</p><i></i><span>✦</span>
+        <span>Рюд</span><i></i><p>┬Е 2026 Veryard</p><i></i><span>Рюд</span>
       </footer>
     </main>
   )
