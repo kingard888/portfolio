@@ -192,7 +192,7 @@ export default function Home() {
         </header>
 
         <section id="home" className="hero shell">
-          <img src="/assets/anime-banner.png" alt="Monochrome anime banner" />
+          <img src=activeTheme === "dark" ? "/assets/anime-banner.png" : "/assets/anime-banner-light.jpg" alt="Monochrome anime banner" />
         </section>
 
         <div className="content-wrap">
