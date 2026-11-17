@@ -26,6 +26,8 @@ const skills = [
   { name: 'Go', icon: 'golang_icon.png' }
 ]
 
+const { activeTheme} = THEME_CONFIG
+
 const projects = [
   {
     name: 'EmiliaBot',
