@@ -88,7 +88,7 @@ main {
   white-space: nowrap;
   transition: .2s ease;
 }
-.nav a:hover, .nav-pill:hover { color: var(--text); border-color: var(--border); background: var(--surface-soft); }
+.nav a:hover { color: var(--text); border-color: var(--border); background: var(--surface-soft); }
 .nav-pill { cursor: pointer; border-color: var(--border); }
 .menu-button { display: none; border: 0; background: transparent; color: var(--text); cursor: pointer; }
 
