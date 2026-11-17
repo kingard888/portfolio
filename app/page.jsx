@@ -308,7 +308,7 @@ export default function Home() {
       </div>
 
       <footer>
-        <p>✦</><i /><p>© 2026 Veryard</p><i /><p>✦</p>
+        <p>✦</p><i /><p>© 2026 Veryard</p><i /><p>✦</p>
       </footer>
     </main>
   )
